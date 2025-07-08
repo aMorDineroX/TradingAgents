@@ -29,6 +29,7 @@ dependencies = [
     "stockstats>=0.6.5",
     "tqdm>=4.67.1",
     "tushare>=1.4.21",
+    "typer>=0.12.0",
     "typing-extensions>=4.14.0",
     "yfinance>=0.2.63",
 ]
