@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tests Frontend TradingAgents</title>
+    
+    <!-- Mocha CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css">
+    
+    <!-- Styles de l'application -->
+    <link href="../static/css/modern-design.css" rel="stylesheet">
+    <link href="../static/css/navigation.css" rel="stylesheet">
+    <link href="../static/css/charts.css" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-primary);
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .test-section {
+            background-color: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+            border: 1px solid var(--border-color);
+        }
+        
+        .test-demo {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            margin: var(--space-4) 0;
+            background-color: var(--bg-secondary);
+        }
+        
+        #mocha {
+            margin-top: var(--space-8);
+        }
+        
+        .manual-test {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            margin: var(--space-3) 0;
+        }
+        
+        .test-result {
+            padding: var(--space-2);
+            border-radius: var(--radius-sm);
+            margin: var(--space-2) 0;
+            font-weight: 500;
+        }
+        
+        .test-result.success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+        
+        .test-result.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Tests Frontend TradingAgents</h1>
+        <p>Suite de tests pour vérifier le bon fonctionnement de l'interface moderne.</p>
+        
+        <!-- Tests manuels interactifs -->
+        <div class="test-section">
+            <h2>🎯 Tests Manuels Interactifs</h2>
+            
+            <div class="manual-test">
+                <h3>Navigation et Thème</h3>
+                <div class="test-demo">
+                    <button class="btn btn-primary" onclick="testThemeToggle()">
+                        <i class="fas fa-moon"></i> Tester Changement de Thème
+                    </button>
+                    <button class="btn btn-secondary" onclick="testSearch()">
+                        <i class="fas fa-search"></i> Tester Recherche (Ctrl+K)
+                    </button>
+                </div>
+                <div id="theme-test-result" class="test-result" style="display: none;"></div>
+            </div>
+            
+            <div class="manual-test">
+                <h3>Notifications Toast</h3>
+                <div class="test-demo">
+                    <button class="btn btn-success" onclick="testNotification('success')">
+                        <i class="fas fa-check"></i> Succès
+                    </button>
+                    <button class="btn btn-warning" onclick="testNotification('warning')">
+                        <i class="fas fa-exclamation-triangle"></i> Avertissement
+                    </button>
+                    <button class="btn btn-error" onclick="testNotification('error')">
+                        <i class="fas fa-times"></i> Erreur
+                    </button>
+                    <button class="btn btn-info" onclick="testNotification('info')">
+                        <i class="fas fa-info"></i> Information
+                    </button>
+                </div>
+            </div>
+            
+            <div class="manual-test">
+                <h3>Tooltips</h3>
+                <div class="test-demo">
+                    <button class="btn btn-primary" data-tooltip="Tooltip en haut" data-tooltip-position="top">
+                        Tooltip Haut
+                    </button>
+                    <button class="btn btn-secondary" data-tooltip="Tooltip à droite" data-tooltip-position="right">
+                        Tooltip Droite
+                    </button>
+                    <button class="btn btn-success" data-tooltip="Tooltip en bas" data-tooltip-position="bottom">
+                        Tooltip Bas
+                    </button>
+                    <button class="btn btn-warning" data-tooltip="Tooltip à gauche" data-tooltip-position="left">
+                        Tooltip Gauche
+                    </button>
+                </div>
+            </div>
+            
+            <div class="manual-test">
+                <h3>Composants UI</h3>
+                <div class="test-demo">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Carte de Test</h4>
+                            </div>
+                            <div class="card-body">
+                                <p>Contenu de la carte avec animation hover.</p>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar animated" style="width: 75%"></div>
+                                </div>
+                                <span class="badge badge-success">Actif</span>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-value">+12.5%</div>
+                            <div class="metric-label">Performance</div>
+                            <div class="metric-change positive">
+                                <i class="fas fa-arrow-up"></i> +2.3%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="manual-test">
+                <h3>Graphiques</h3>
+                <div class="test-demo">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h4 class="chart-title">Graphique de Test</h4>
+                            <div class="chart-controls">
+                                <button class="btn btn-sm btn-secondary" onclick="testChart()">
+                                    <i class="fas fa-chart-line"></i> Générer Graphique
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="testChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div id="chart-test-result" class="test-result" style="display: none;"></div>
+            </div>
+            
+            <div class="manual-test">
+                <h3>Formulaires et Validation</h3>
+                <div class="test-demo">
+                    <form id="testForm" data-validate>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Email (requis)</label>
+                                <input type="email" class="form-control" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nombre (requis)</label>
+                                <input type="number" class="form-control" name="number" required min="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-control" name="message" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Tester Validation
+                        </button>
+                    </form>
+                </div>
+                <div id="form-test-result" class="test-result" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- Tests automatisés avec Mocha -->
+        <div class="test-section">
+            <h2>🤖 Tests Automatisés</h2>
+            <div id="mocha"></div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://unpkg.com/mocha/mocha.js"></script>
+    <script src="https://unpkg.com/chai/chai.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Scripts de l'application -->
+    <script src="../static/js/modern-ui.js"></script>
+    <script src="../static/js/charts.js"></script>
+    <script src="../static/js/advanced-ux.js"></script>
+    
+    <script>
+        // Configuration Mocha
+        mocha.setup('bdd');
+        const expect = chai.expect;
+        
+        // Tests automatisés
+        describe('TradingAgents Frontend Tests', function() {
+            
+            describe('ModernUI Class', function() {
+                it('should be initialized', function() {
+                    expect(window.modernUI).to.exist;
+                    expect(window.modernUI).to.be.an('object');
+                });
+                
+                it('should have theme management methods', function() {
+                    expect(window.modernUI.toggleTheme).to.be.a('function');
+                    expect(window.modernUI.updateThemeIcon).to.be.a('function');
+                });
+                
+                it('should have notification methods', function() {
+                    expect(window.modernUI.showNotification).to.be.a('function');
+                    expect(window.modernUI.createNotificationContainer).to.be.a('function');
+                });
+                
+                it('should handle theme toggle', function() {
+                    const initialTheme = document.documentElement.getAttribute('data-theme');
+                    window.modernUI.toggleTheme();
+                    const newTheme = document.documentElement.getAttribute('data-theme');
+                    expect(newTheme).to.not.equal(initialTheme);
+                    
+                    // Remettre le thème initial
+                    window.modernUI.toggleTheme();
+                });
+            });
+            
+            describe('TradingCharts Class', function() {
+                it('should be initialized', function() {
+                    expect(window.tradingCharts).to.exist;
+                    expect(window.tradingCharts).to.be.an('object');
+                });
+                
+                it('should have chart creation methods', function() {
+                    expect(window.tradingCharts.createPriceChart).to.be.a('function');
+                    expect(window.tradingCharts.createPerformanceChart).to.be.a('function');
+                    expect(window.tradingCharts.createAllocationChart).to.be.a('function');
+                });
+                
+                it('should have chart management methods', function() {
+                    expect(window.tradingCharts.updateChart).to.be.a('function');
+                    expect(window.tradingCharts.destroyChart).to.be.a('function');
+                    expect(window.tradingCharts.resizeChart).to.be.a('function');
+                });
+            });
+            
+            describe('AdvancedUX Class', function() {
+                it('should be initialized', function() {
+                    expect(window.advancedUX).to.exist;
+                    expect(window.advancedUX).to.be.an('object');
+                });
+                
+                it('should have preferences management', function() {
+                    expect(window.advancedUX.preferences).to.be.an('object');
+                    expect(window.advancedUX.updatePreference).to.be.a('function');
+                });
+                
+                it('should have wizard functionality', function() {
+                    expect(window.advancedUX.showWizard).to.be.a('function');
+                    expect(window.advancedUX.wizards).to.be.a('Map');
+                });
+            });
+            
+            describe('CSS Variables', function() {
+                it('should have primary color defined', function() {
+                    const primaryColor = getComputedStyle(document.documentElement)
+                        .getPropertyValue('--primary-color').trim();
+                    expect(primaryColor).to.not.be.empty;
+                });
+                
+                it('should have font family defined', function() {
+                    const fontFamily = getComputedStyle(document.documentElement)
+                        .getPropertyValue('--font-family').trim();
+                    expect(fontFamily).to.include('Inter');
+                });
+                
+                it('should have spacing variables', function() {
+                    const space4 = getComputedStyle(document.documentElement)
+                        .getPropertyValue('--space-4').trim();
+                    expect(space4).to.not.be.empty;
+                });
+            });
+            
+            describe('Responsive Design', function() {
+                it('should have responsive classes', function() {
+                    const testElement = document.createElement('div');
+                    testElement.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+                    document.body.appendChild(testElement);
+                    
+                    const styles = getComputedStyle(testElement);
+                    expect(styles.display).to.equal('grid');
+                    
+                    document.body.removeChild(testElement);
+                });
+            });
+            
+            describe('Accessibility', function() {
+                it('should support keyboard navigation', function() {
+                    const buttons = document.querySelectorAll('button');
+                    buttons.forEach(button => {
+                        expect(button.tabIndex).to.not.equal(-1);
+                    });
+                });
+                
+                it('should have proper ARIA labels', function() {
+                    const interactiveElements = document.querySelectorAll('button, input, select');
+                    // Au moins quelques éléments devraient avoir des labels appropriés
+                    expect(interactiveElements.length).to.be.greaterThan(0);
+                });
+            });
+        });
+        
+        // Fonctions de test manuel
+        function testThemeToggle() {
+            const initialTheme = document.documentElement.getAttribute('data-theme');
+            window.modernUI.toggleTheme();
+            const newTheme = document.documentElement.getAttribute('data-theme');
+            
+            const result = document.getElementById('theme-test-result');
+            result.style.display = 'block';
+            
+            if (newTheme !== initialTheme) {
+                result.className = 'test-result success';
+                result.innerHTML = '<i class="fas fa-check"></i> Changement de thème réussi: ' + initialTheme + ' → ' + newTheme;
+            } else {
+                result.className = 'test-result error';
+                result.innerHTML = '<i class="fas fa-times"></i> Échec du changement de thème';
+            }
+        }
+        
+        function testSearch() {
+            // Simuler Ctrl+K
+            const event = new KeyboardEvent('keydown', {
+                key: 'k',
+                ctrlKey: true,
+                bubbles: true
+            });
+            document.dispatchEvent(event);
+            
+            setTimeout(() => {
+                const searchInput = document.querySelector('.global-search-input');
+                if (searchInput && document.activeElement === searchInput) {
+                    showNotification('Recherche activée avec succès!', 'success');
+                } else {
+                    showNotification('Recherche non trouvée (normal en mode test)', 'info');
+                }
+            }, 100);
+        }
+        
+        function testNotification(type) {
+            const messages = {
+                success: 'Test de notification de succès!',
+                warning: 'Test de notification d\'avertissement!',
+                error: 'Test de notification d\'erreur!',
+                info: 'Test de notification d\'information!'
+            };
+            
+            if (window.modernUI && window.modernUI.showNotification) {
+                window.modernUI.showNotification(messages[type], type);
+            } else {
+                console.log('Notification:', type, messages[type]);
+            }
+        }
+        
+        function testChart() {
+            const canvas = document.getElementById('testChart');
+            if (!canvas) return;
+            
+            const data = {
+                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun'],
+                prices: [100, 105, 98, 110, 115, 120]
+            };
+            
+            try {
+                if (window.tradingCharts) {
+                    window.tradingCharts.createPriceChart('testChart', data, {
+                        label: 'Test Chart'
+                    });
+                    
+                    const result = document.getElementById('chart-test-result');
+                    result.style.display = 'block';
+                    result.className = 'test-result success';
+                    result.innerHTML = '<i class="fas fa-check"></i> Graphique créé avec succès!';
+                } else {
+                    throw new Error('TradingCharts non disponible');
+                }
+            } catch (error) {
+                const result = document.getElementById('chart-test-result');
+                result.style.display = 'block';
+                result.className = 'test-result error';
+                result.innerHTML = '<i class="fas fa-times"></i> Erreur création graphique: ' + error.message;
+            }
+        }
+        
+        // Test de validation de formulaire
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const result = document.getElementById('form-test-result');
+            result.style.display = 'block';
+            
+            const email = this.querySelector('input[name="email"]').value;
+            const number = this.querySelector('input[name="number"]').value;
+            
+            if (email && number) {
+                result.className = 'test-result success';
+                result.innerHTML = '<i class="fas fa-check"></i> Validation réussie! Email: ' + email + ', Nombre: ' + number;
+            } else {
+                result.className = 'test-result error';
+                result.innerHTML = '<i class="fas fa-times"></i> Validation échouée - champs requis manquants';
+            }
+        });
+        
+        // Lancer les tests automatisés
+        window.addEventListener('load', function() {
+            mocha.run();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,553 @@
+{% extends "base_modern.html" %}
+
+{% block title %}TradingAgents - Analyses Intelligentes{% endblock %}
+
+{% block extra_head %}
+<style>
+    .agent-card {
+        background-color: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        padding: var(--space-4);
+        margin-bottom: var(--space-4);
+        border: 1px solid var(--border-color);
+    }
+
+    .status-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: var(--space-2);
+    }
+
+    .status-pending {
+        background-color: var(--text-muted);
+    }
+
+    .status-active {
+        background-color: var(--warning-color);
+        animation: pulse 2s infinite;
+    }
+
+    .status-complete {
+        background-color: var(--success-color);
+    }
+
+    .status-error {
+        background-color: var(--error-color);
+    }
+
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+    .progress-custom {
+        height: 8px;
+        background-color: var(--bg-tertiary);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+    }
+
+    .progress-bar-custom {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        border-radius: var(--radius-full);
+        transition: width 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- En-tête de bienvenue -->
+    <div class="section-header">
+        <h1><i class="fas fa-robot"></i> Analyses Intelligentes</h1>
+        <p>
+            Déployez des équipes d'agents spécialisés pour analyser les marchés financiers
+            et prendre des décisions de trading éclairées.
+        </p>
+    </div>
+
+    <!-- Interface d'analyse -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Formulaire de nouvelle analyse -->
+        <div class="lg:col-span-2">
+            <div class="card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-play-circle"></i>
+                        Nouvelle Analyse
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form id="analysisForm" data-validate>
+                        <div class="form-group">
+                            <label class="form-label">Symbole du Ticker</label>
+                            <input type="text" class="form-control" id="ticker" name="ticker"
+                                   placeholder="Ex: AAPL, NVDA, SPY" value="SPY" required>
+                            <div class="text-xs text-secondary mt-1">Entrez le symbole du ticker à analyser</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Date d'Analyse</label>
+                            <input type="date" class="form-control" id="trade_date" name="trade_date" required>
+                            <div class="text-xs text-secondary mt-1">Date pour laquelle effectuer l'analyse</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Analystes Sélectionnés</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="checkbox-card">
+                                    <input type="checkbox" id="market_analyst" name="analysts" value="market" checked>
+                                    <label for="market_analyst" class="checkbox-label">
+                                        <i class="fas fa-chart-line"></i>
+                                        Analyste Marché
+                                    </label>
+                                </div>
+                                <div class="checkbox-card">
+                                    <input type="checkbox" id="social_analyst" name="analysts" value="social" checked>
+                                    <label for="social_analyst" class="checkbox-label">
+                                        <i class="fas fa-users"></i>
+                                        Analyste Social
+                                    </label>
+                                </div>
+                                <div class="checkbox-card">
+                                    <input type="checkbox" id="news_analyst" name="analysts" value="news" checked>
+                                    <label for="news_analyst" class="checkbox-label">
+                                        <i class="fas fa-newspaper"></i>
+                                        Analyste Actualités
+                                    </label>
+                                </div>
+                                <div class="checkbox-card">
+                                    <input type="checkbox" id="fundamentals_analyst" name="analysts" value="fundamentals" checked>
+                                    <label for="fundamentals_analyst" class="checkbox-label">
+                                        <i class="fas fa-calculator"></i>
+                                        Analyste Fondamental
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Profondeur de Recherche</label>
+                            <select class="form-control form-select" id="research_depth" name="research_depth">
+                                <option value="1">Rapide (1 tour de débat)</option>
+                                <option value="2" selected>Standard (2 tours de débat)</option>
+                                <option value="3">Approfondi (3 tours de débat)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-full" id="startAnalysisBtn">
+                            <i class="fas fa-rocket"></i>
+                            Démarrer l'Analyse
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statut des agents -->
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-heartbeat"></i>
+                        Statut des Agents
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div id="agentsStatus">
+                        <!-- Équipe d'Analystes -->
+                        <div class="agent-card">
+                            <h6 class="font-semibold mb-3">
+                                <i class="fas fa-chart-bar"></i>
+                                Équipe d'Analystes
+                            </h6>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <span class="status-indicator status-pending" id="market-status"></span>
+                                    <small>Analyste Marché</small>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="status-indicator status-pending" id="social-status"></span>
+                                    <small>Analyste Social</small>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="status-indicator status-pending" id="news-status"></span>
+                                    <small>Analyste Actualités</small>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="status-indicator status-pending" id="fundamentals-status"></span>
+                                    <small>Analyste Fondamental</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Équipe de Recherche -->
+                        <div class="agent-card">
+                            <h6 class="font-semibold mb-3">
+                                <i class="fas fa-search"></i>
+                                Équipe de Recherche
+                            </h6>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <span class="status-indicator status-pending" id="bull-status"></span>
+                                    <small>Chercheur Haussier</small>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="status-indicator status-pending" id="bear-status"></span>
+                                    <small>Chercheur Baissier</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Équipe de Trading -->
+                        <div class="agent-card">
+                            <h6 class="font-semibold mb-3">
+                                <i class="fas fa-exchange-alt"></i>
+                                Équipe de Trading
+                            </h6>
+                            <div class="flex items-center">
+                                <span class="status-indicator status-pending" id="trader-status"></span>
+                                <small>Trader Principal</small>
+                            </div>
+                        </div>
+
+                        <!-- Gestion des Risques -->
+                        <div class="agent-card">
+                            <h6 class="font-semibold mb-3">
+                                <i class="fas fa-shield-alt"></i>
+                                Gestion des Risques
+                            </h6>
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <span class="status-indicator status-pending" id="risky-status"></span>
+                                    <small>Analyste Agressif</small>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="status-indicator status-pending" id="neutral-status"></span>
+                                    <small>Analyste Neutre</small>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="status-indicator status-pending" id="safe-status"></span>
+                                    <small>Analyste Conservateur</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Résultats en temps réel -->
+    <div class="mt-8">
+        <div class="card" id="resultsCard" style="display: none;">
+            <div class="card-header">
+                <h3>
+                    <i class="fas fa-chart-pie"></i>
+                    Résultats de l'Analyse
+                </h3>
+            </div>
+            <div class="card-body">
+                <div id="analysisProgress" class="mb-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <span>Progression de l'analyse</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="progress-custom">
+                        <div class="progress-bar-custom" id="progressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div id="analysisResults">
+                    <!-- Les résultats seront affichés ici -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analyses récentes -->
+    <div class="mt-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    <i class="fas fa-history"></i>
+                    Analyses Récentes
+                </h3>
+            </div>
+            <div class="card-body">
+                <div id="recentAnalyses">
+                    <p class="text-secondary">Chargement des analyses récentes...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Définir la date par défaut à aujourd'hui
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('trade_date').value = today;
+
+    // Charger les analyses récentes
+    loadRecentAnalyses();
+
+    // Gérer la soumission du formulaire
+    document.getElementById('analysisForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        startNewAnalysis();
+    });
+
+    // Écouter les événements WebSocket si disponible
+    if (typeof socket !== 'undefined') {
+        socket.on('analysis_status', function(data) {
+            handleAnalysisStatus(data);
+        });
+
+        socket.on('analysis_complete', function(data) {
+            handleAnalysisComplete(data);
+        });
+
+        socket.on('analysis_error', function(data) {
+            handleAnalysisError(data);
+        });
+    }
+});
+
+function startNewAnalysis() {
+    const form = document.getElementById('analysisForm');
+    const formData = new FormData(form);
+
+    // Récupérer les analystes sélectionnés
+    const selectedAnalysts = [];
+    const analystCheckboxes = form.querySelectorAll('input[name="analysts"]:checked');
+    analystCheckboxes.forEach(checkbox => {
+        selectedAnalysts.push(checkbox.value);
+    });
+
+    if (selectedAnalysts.length === 0) {
+        showNotification('Veuillez sélectionner au moins un analyste', 'warning');
+        return;
+    }
+
+    const data = {
+        ticker: formData.get('ticker'),
+        trade_date: formData.get('trade_date'),
+        config: {
+            selected_analysts: selectedAnalysts,
+            max_debate_rounds: parseInt(formData.get('research_depth')),
+            max_risk_discuss_rounds: parseInt(formData.get('research_depth'))
+        }
+    };
+
+    // Désactiver le bouton et afficher le spinner
+    const btn = document.getElementById('startAnalysisBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading-spinner"></span>Analyse en cours...';
+
+    // Afficher la carte de résultats
+    document.getElementById('resultsCard').style.display = 'block';
+    updateProgress(5);
+
+    // Simuler l'activation des agents
+    simulateAgentActivation();
+
+    // Envoyer la requête
+    fetch('/api/start_analysis', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showNotification('Analyse démarrée avec succès!', 'success');
+            window.currentSessionId = result.session_id;
+            updateProgress(15);
+        } else {
+            showNotification('Erreur: ' + (result.error || 'Erreur inconnue'), 'error');
+            resetAnalysisButton();
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        showNotification('Erreur de connexion: ' + error.message, 'error');
+        resetAnalysisButton();
+    });
+}
+
+function simulateAgentActivation() {
+    const agents = [
+        'market-status', 'social-status', 'news-status', 'fundamentals-status',
+        'bull-status', 'bear-status', 'trader-status',
+        'risky-status', 'neutral-status', 'safe-status'
+    ];
+
+    let delay = 1000;
+    agents.forEach((agentId, index) => {
+        setTimeout(() => {
+            const element = document.getElementById(agentId);
+            if (element) {
+                element.className = 'status-indicator status-active';
+                setTimeout(() => {
+                    element.className = 'status-indicator status-complete';
+                }, 2000);
+            }
+            updateProgress(15 + (index + 1) * 8);
+        }, delay);
+        delay += 500;
+    });
+}
+
+function resetAnalysisButton() {
+    const btn = document.getElementById('startAnalysisBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-rocket"></i>Démarrer l\'Analyse';
+
+    // Réinitialiser les statuts des agents
+    const indicators = document.querySelectorAll('.status-indicator');
+    indicators.forEach(indicator => {
+        indicator.className = 'status-indicator status-pending';
+    });
+}
+
+function handleAnalysisStatus(data) {
+    console.log('Statut d\'analyse:', data);
+    if (data.progress) {
+        updateProgress(data.progress);
+    }
+}
+
+function handleAnalysisComplete(data) {
+    console.log('Analyse terminée:', data);
+    updateProgress(100);
+    displayResults(data.result);
+    resetAnalysisButton();
+    loadRecentAnalyses();
+}
+
+function handleAnalysisError(data) {
+    console.log('Erreur d\'analyse:', data);
+    showNotification('Erreur lors de l\'analyse: ' + data.error, 'error');
+    resetAnalysisButton();
+}
+
+function updateProgress(percentage) {
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    if (progressBar && progressText) {
+        progressBar.style.width = Math.min(percentage, 100) + '%';
+        progressText.textContent = Math.min(percentage, 100) + '%';
+    }
+}
+
+function displayResults(result) {
+    const resultsDiv = document.getElementById('analysisResults');
+    if (!resultsDiv) return;
+
+    resultsDiv.innerHTML = `
+        <div class="alert alert-success">
+            <h5><i class="fas fa-check-circle"></i> Analyse Terminée</h5>
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                    <strong>Ticker:</strong> ${result.ticker || 'N/A'}
+                </div>
+                <div>
+                    <strong>Date:</strong> ${result.trade_date || 'N/A'}
+                </div>
+                <div>
+                    <strong>Décision:</strong>
+                    <span class="badge badge-primary">${result.decision || 'En attente'}</span>
+                </div>
+                <div>
+                    <strong>Session ID:</strong> ${result.session_id || 'N/A'}
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="/dashboard" class="btn btn-secondary">
+                <i class="fas fa-chart-line"></i>
+                Voir les Détails
+            </a>
+        </div>
+    `;
+}
+
+function loadRecentAnalyses() {
+    fetch('/api/list_results')
+        .then(response => response.json())
+        .then(data => {
+            const analyses = data.results || data || [];
+            displayRecentAnalyses(analyses);
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des analyses:', error);
+            document.getElementById('recentAnalyses').innerHTML =
+                '<p class="text-secondary">Erreur lors du chargement des analyses récentes.</p>';
+        });
+}
+
+function displayRecentAnalyses(analyses) {
+    const container = document.getElementById('recentAnalyses');
+    if (!container) return;
+
+    if (!analyses || analyses.length === 0) {
+        container.innerHTML = '<p class="text-secondary">Aucune analyse récente trouvée.</p>';
+        return;
+    }
+
+    const recentAnalyses = analyses.slice(-5).reverse(); // 5 plus récentes
+
+    let html = '<div class="data-table-container"><table class="data-table">';
+    html += '<thead><tr><th>Ticker</th><th>Date</th><th>Décision</th><th>Timestamp</th><th>Actions</th></tr></thead><tbody>';
+
+    recentAnalyses.forEach(analysis => {
+        const timestamp = analysis.timestamp ?
+            new Date(analysis.timestamp).toLocaleString('fr-FR') : 'N/A';
+
+        html += `
+            <tr>
+                <td><strong>${analysis.ticker || 'N/A'}</strong></td>
+                <td>${analysis.trade_date || 'N/A'}</td>
+                <td><span class="badge badge-secondary">${analysis.decision || 'En cours'}</span></td>
+                <td>${timestamp}</td>
+                <td>
+                    <button class="btn-icon" onclick="viewAnalysis('${analysis.session_id || ''}')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+    html += '</tbody></table></div>';
+    container.innerHTML = html;
+}
+
+function viewAnalysis(sessionId) {
+    if (sessionId) {
+        window.location.href = `/dashboard?session=${sessionId}`;
+    } else {
+        showNotification('ID de session non disponible', 'warning');
+    }
+}
+
+// Fonction utilitaire pour afficher les notifications
+function showNotification(message, type = 'info') {
+    if (window.modernUI && window.modernUI.showNotification) {
+        window.modernUI.showNotification(message, type);
+    } else {
+        // Fallback simple
+        alert(message);
+    }
+}
+</script>
+{% endblock %}

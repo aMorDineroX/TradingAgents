@@ -1,0 +1,30 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Démarrer webapp2",
+			"type": "shell",
+			"command": "${workspaceFolder}/.venv/bin/python",
+			"args": [
+				"webapp2/app.py"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Démarrer l'application Web TradingAgents",
+			"type": "shell",
+			"command": "/workspaces/TradingAgents/.venv/bin/python",
+			"args": [
+				"mobile-app/webapp.py"
+			],
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

@@ -1,0 +1,44 @@
+{
+  "fast": {
+    "name": "Configuration Rapide",
+    "description": "Analyse rapide avec modèles légers",
+    "config": {
+      "llm_provider": "groq",
+      "quick_think_llm": "llama-3.1-8b-instant",
+      "deep_think_llm": "llama-3.1-8b-instant",
+      "max_debate_rounds": 1,
+      "max_risk_discuss_rounds": 1,
+      "temperature": 0.3,
+      "max_tokens": 2000,
+      "online_tools": false
+    }
+  },
+  "balanced": {
+    "name": "Configuration Équilibrée",
+    "description": "Bon compromis vitesse/qualité",
+    "config": {
+      "llm_provider": "groq",
+      "quick_think_llm": "llama-3.1-8b-instant",
+      "deep_think_llm": "llama-3.1-70b-versatile",
+      "max_debate_rounds": 2,
+      "max_risk_discuss_rounds": 2,
+      "temperature": 0.7,
+      "max_tokens": 4000,
+      "online_tools": true
+    }
+  },
+  "deep": {
+    "name": "Configuration Approfondie",
+    "description": "Analyse détaillée avec modèles avancés",
+    "config": {
+      "llm_provider": "groq",
+      "quick_think_llm": "llama-3.1-70b-versatile",
+      "deep_think_llm": "llama-3.2-90b-text-preview",
+      "max_debate_rounds": 3,
+      "max_risk_discuss_rounds": 3,
+      "temperature": 0.8,
+      "max_tokens": 6000,
+      "online_tools": true
+    }
+  }
+}

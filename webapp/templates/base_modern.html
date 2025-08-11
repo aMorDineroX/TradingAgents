@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TradingAgents - Système de trading algorithmique intelligent">
+    <title>{% block title %}TradingAgents{% endblock %}</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link href="{{ url_for('static', filename='css/modern-design.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/navigation.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/charts.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/components.css') }}" rel="stylesheet">
+    
+    <!-- Chart.js pour les graphiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation principale -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <!-- Logo et branding -->
+            <a href="/" class="navbar-brand">
+                <div class="navbar-brand-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <span>TradingAgents</span>
+            </a>
+            
+            <!-- Navigation principale -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="/" class="nav-link" data-tooltip="Analyses manuelles (Ctrl+H)">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analyses</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/automation" class="nav-link" data-tooltip="Automatisation (Ctrl+A)">
+                        <i class="fas fa-cogs"></i>
+                        <span>Automatisation</span>
+                        <div class="nav-status-indicator status-stopped" id="automation-status-indicator"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/backtesting" class="nav-link" data-tooltip="Tests historiques (Ctrl+B)">
+                        <i class="fas fa-history"></i>
+                        <span>Backtesting</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link" data-tooltip="Vue d'ensemble (Ctrl+D)">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/config" class="nav-link" data-tooltip="Paramètres">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Configuration</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Actions de navigation -->
+            <div class="navbar-actions">
+                <!-- Recherche globale -->
+                <div class="global-search">
+                    <div class="global-search-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <input type="text" class="global-search-input" placeholder="Rechercher... (Ctrl+K)">
+                    <div class="global-search-results">
+                        <!-- Résultats de recherche -->
+                    </div>
+                </div>
+                
+                <!-- Bouton de thème -->
+                <button class="theme-toggle" data-tooltip="Changer de thème (Ctrl+T)">
+                    <i class="fas fa-moon"></i>
+                </button>
+                
+                <!-- Menu mobile -->
+                <button class="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Menu mobile -->
+    <div class="mobile-menu">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <div class="navbar-brand">
+                    <div class="navbar-brand-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <span>TradingAgents</span>
+                </div>
+                <button class="mobile-menu-close btn-icon">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <nav class="mobile-menu-nav">
+                <a href="/" class="mobile-nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analyses</span>
+                </a>
+                <a href="/automation" class="mobile-nav-link">
+                    <i class="fas fa-cogs"></i>
+                    <span>Automatisation</span>
+                </a>
+                <a href="/backtesting" class="mobile-nav-link">
+                    <i class="fas fa-history"></i>
+                    <span>Backtesting</span>
+                </a>
+                <a href="/dashboard" class="mobile-nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Tableau de bord</span>
+                </a>
+                <a href="/config" class="mobile-nav-link">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Configuration</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- Breadcrumbs -->
+    {% if show_breadcrumbs %}
+    <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <!-- Généré automatiquement par JavaScript -->
+        </nav>
+    </div>
+    {% endif %}
+    
+    <!-- Contenu principal -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h6>TradingAgents</h6>
+                    <p class="text-muted">Système de trading algorithmique intelligent</p>
+                </div>
+                <div class="footer-section">
+                    <h6>Raccourcis</h6>
+                    <ul class="footer-links">
+                        <li><kbd>Ctrl</kbd> + <kbd>K</kbd> Recherche</li>
+                        <li><kbd>Ctrl</kbd> + <kbd>D</kbd> Tableau de bord</li>
+                        <li><kbd>Ctrl</kbd> + <kbd>A</kbd> Automatisation</li>
+                        <li><kbd>Ctrl</kbd> + <kbd>T</kbd> Thème</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h6>Statut</h6>
+                    <div class="status-indicators">
+                        <div class="status-item">
+                            <span class="status-indicator status-running"></span>
+                            <span>Base de données</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-indicator status-stopped" id="footer-automation-status"></span>
+                            <span>Automatisation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="text-muted">&copy; 2024 TradingAgents. Développé avec ❤️ pour les traders.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client@4.7.2/dist/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/modern-ui.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/advanced-ux.js') }}"></script>
+    
+    {% block extra_scripts %}{% endblock %}
+    
+    <!-- Script de base pour toutes les pages -->
+    <script>
+        // Configuration globale
+        window.tradingAgentsConfig = {
+            socketUrl: window.location.origin,
+            apiUrl: window.location.origin + '/api',
+            theme: localStorage.getItem('theme') || 'light'
+        };
+        
+        // Initialisation Socket.IO
+        const socket = io();
+        
+        // Gestion des événements Socket.IO
+        socket.on('connect', function() {
+            console.log('🔌 Connecté au serveur');
+        });
+        
+        socket.on('disconnect', function() {
+            console.log('🔌 Déconnecté du serveur');
+        });
+        
+        // Mise à jour du statut d'automatisation
+        async function updateAutomationStatus() {
+            try {
+                const response = await fetch('/api/automation/status');
+                const data = await response.json();
+                
+                const indicators = document.querySelectorAll('#automation-status-indicator, #footer-automation-status');
+                indicators.forEach(indicator => {
+                    indicator.className = `nav-status-indicator status-${data.automation.status}`;
+                });
+            } catch (error) {
+                console.error('Erreur mise à jour statut:', error);
+            }
+        }
+        
+        // Mise à jour périodique du statut
+        updateAutomationStatus();
+        setInterval(updateAutomationStatus, 30000);
+        
+        // Gestion des erreurs globales
+        window.addEventListener('error', function(e) {
+            console.error('Erreur JavaScript:', e.error);
+            if (window.modernUI) {
+                window.modernUI.showNotification('Une erreur inattendue s\'est produite', 'error');
+            }
+        });
+        
+        // Gestion des erreurs de réseau
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Promesse rejetée:', e.reason);
+            if (e.reason && e.reason.name === 'TypeError' && e.reason.message.includes('fetch')) {
+                if (window.modernUI) {
+                    window.modernUI.showNotification('Erreur de connexion au serveur', 'error');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

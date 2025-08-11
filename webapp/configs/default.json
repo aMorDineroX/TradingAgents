@@ -1,0 +1,28 @@
+{
+  "config": {
+    "llm_provider": "groq",
+    "quick_think_llm": "llama-3.1-8b-instant",
+    "deep_think_llm": "llama-3.1-70b-versatile",
+    "backend_url": "https://api.groq.com/openai/v1",
+    "selected_analysts": [
+      "market",
+      "social",
+      "news",
+      "fundamentals"
+    ],
+    "max_debate_rounds": 2,
+    "max_risk_discuss_rounds": 2,
+    "online_tools": true,
+    "temperature": 0.7,
+    "max_tokens": 4000,
+    "timeout": 60,
+    "results_dir": "results",
+    "log_level": "INFO",
+    "project_dir": ".",
+    "debug": true
+  },
+  "metadata": {
+    "created_at": "2025-08-10T17:32:56.181375",
+    "version": "1.0"
+  }
+}

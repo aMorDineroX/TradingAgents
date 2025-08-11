@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TradingAgents - Mini Webapp</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>TradingAgents – Mini Webapp</h1>
+    <p>Entrez un ticker et une date (YYYY-MM-DD), puis lancez l'analyse.</p>
+
+    <form id="analyzeForm">
+      <div class="row">
+        <label for="ticker">Ticker</label>
+        <input id="ticker" name="ticker" placeholder="AAPL" required />
+      </div>
+      <div class="row">
+        <label for="trade_date">Date</label>
+        <input id="trade_date" name="trade_date" placeholder="2024-12-31" required />
+      </div>
+      <button type="submit">Analyser</button>
+    </form>
+
+    <pre id="output" class="output"></pre>
+  </main>
+
+  <script>
+    const form = document.getElementById('analyzeForm');
+    const output = document.getElementById('output');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      output.textContent = 'Analyse en cours...';
+
+      const payload = {
+        ticker: document.getElementById('ticker').value.trim(),
+        trade_date: document.getElementById('trade_date').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        output.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        output.textContent = 'Erreur: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

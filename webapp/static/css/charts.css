@@ -1,0 +1,464 @@
+/* ========================================
+   Graphiques et Visualisations TradingAgents
+   ======================================== */
+
+/* Conteneurs de graphiques */
+.chart-container {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.chart-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.chart-controls {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.chart-period-selector {
+  display: flex;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-1);
+}
+
+.period-btn {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.period-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
+}
+
+.period-btn.active {
+  background-color: var(--primary-color);
+  color: var(--text-inverse);
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 400px;
+  width: 100%;
+}
+
+.chart-wrapper.large {
+  height: 500px;
+}
+
+.chart-wrapper.small {
+  height: 300px;
+}
+
+/* Graphiques en ligne */
+.line-chart {
+  width: 100%;
+  height: 100%;
+}
+
+/* Graphiques en barres */
+.bar-chart {
+  width: 100%;
+  height: 100%;
+}
+
+/* Graphiques en secteurs */
+.pie-chart {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Graphiques de chandelles japonaises */
+.candlestick-chart {
+  width: 100%;
+  height: 100%;
+}
+
+/* Légendes personnalisées */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-color);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.legend-label {
+  color: var(--text-secondary);
+}
+
+.legend-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-left: var(--space-2);
+}
+
+/* Indicateurs de performance */
+.performance-indicators {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.performance-item {
+  text-align: center;
+  padding: var(--space-4);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.performance-value {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  margin-bottom: var(--space-1);
+}
+
+.performance-value.positive {
+  color: var(--profit-color);
+}
+
+.performance-value.negative {
+  color: var(--loss-color);
+}
+
+.performance-value.neutral {
+  color: var(--text-primary);
+}
+
+.performance-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.performance-change {
+  font-size: var(--text-sm);
+  margin-top: var(--space-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+/* Graphiques de heatmap */
+.heatmap-container {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4);
+}
+
+.heatmap-cell {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-inverse);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+/* Couleurs pour heatmap */
+.heatmap-cell.gain-high { background-color: #059669; }
+.heatmap-cell.gain-medium { background-color: #10b981; }
+.heatmap-cell.gain-low { background-color: #34d399; }
+.heatmap-cell.neutral { background-color: var(--neutral-color); }
+.heatmap-cell.loss-low { background-color: #f87171; }
+.heatmap-cell.loss-medium { background-color: #ef4444; }
+.heatmap-cell.loss-high { background-color: #dc2626; }
+
+/* Graphiques de volume */
+.volume-chart {
+  height: 100px;
+  margin-top: var(--space-4);
+}
+
+.volume-bar {
+  fill: var(--primary-color);
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
+}
+
+.volume-bar:hover {
+  opacity: 1;
+}
+
+/* Indicateurs techniques */
+.technical-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.indicator-value {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.indicator-label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: var(--space-1);
+}
+
+.indicator-signal {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  margin-top: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.signal-buy {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--success-color);
+}
+
+.signal-sell {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--error-color);
+}
+
+.signal-hold {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+/* Tooltips pour graphiques */
+.chart-tooltip {
+  position: absolute;
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  pointer-events: none;
+  z-index: var(--z-tooltip);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  box-shadow: var(--shadow-lg);
+}
+
+.chart-tooltip.visible {
+  opacity: 1;
+}
+
+.tooltip-title {
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.tooltip-item {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+/* Graphiques responsives */
+@media (max-width: 768px) {
+  .chart-container {
+    padding: var(--space-4);
+  }
+  
+  .chart-header {
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: stretch;
+  }
+  
+  .chart-controls {
+    justify-content: center;
+  }
+  
+  .chart-wrapper {
+    height: 300px;
+  }
+  
+  .chart-wrapper.large {
+    height: 350px;
+  }
+  
+  .performance-indicators {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .technical-indicators {
+    justify-content: center;
+  }
+  
+  .chart-legend {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-wrapper {
+    height: 250px;
+  }
+  
+  .performance-indicators {
+    grid-template-columns: 1fr;
+  }
+  
+  .period-btn {
+    padding: var(--space-1) var(--space-2);
+  }
+}
+
+/* Animations pour les graphiques */
+@keyframes chartFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chart-container.animate-in {
+  animation: chartFadeIn 0.6s ease-out;
+}
+
+/* États de chargement */
+.chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.chart-loading .loading-spinner-lg {
+  margin-bottom: var(--space-4);
+}
+
+.chart-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  flex-direction: column;
+  gap: var(--space-4);
+  color: var(--text-muted);
+}
+
+.chart-error i {
+  font-size: var(--text-4xl);
+  color: var(--error-color);
+}
+
+/* Graphiques en plein écran */
+.chart-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-primary);
+  z-index: var(--z-modal);
+  padding: var(--space-6);
+}
+
+.chart-fullscreen .chart-wrapper {
+  height: calc(100vh - 200px);
+}
+
+.fullscreen-controls {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-6);
+  display: flex;
+  gap: var(--space-2);
+}
+
+.fullscreen-btn {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.fullscreen-btn:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-hover);
+}
